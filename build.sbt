@@ -19,6 +19,8 @@ resolvers += "Akka Repository" at "http://repo.akka.io/releases/"
 
 resolvers += "spray" at "http://repo.spray.io/"
 
+//seq( sbtavro.SbtAvro.avroSettings : _*)
+
 libraryDependencies ++= Seq( //Dates and Times
   "org.joda" % "joda-convert" % "1.6"
   ,"joda-time" % "joda-time" % "2.3"
@@ -30,11 +32,14 @@ Seq( sbtavro.SbtAvro.avroSettings : _*)
 
 (stringType in avroConfig) := "String"
 
+
 libraryDependencies += "io.spray" %%  "spray-json" % "1.2.6" //JSON
 
 //libraryDependencies += "org.scalaz" %% "scalaz-core" % "7.0.6" //Monads
 
 libraryDependencies += ("com.twitter" % "parquet-avro" % "1.5.0") //Columnar Storage for Hadoop
+
+libraryDependencies += "com.twitter" % "parquet-avro" % "1.5.0" //Columnar Storage for Hadoop
 
 libraryDependencies += "com.twitter" %% "algebird-core" % "0.6.0" //Monoids
 
@@ -45,16 +50,14 @@ libraryDependencies += "com.twitter" % "chill-avro" % "0.4.0"
 
 libraryDependencies += "org.scalatest" %% "scalatest" % "2.0" % "test" //Testing
 
-//libraryDependencies += "com.julianpeeters" %% "avro-scala-macro-annotations" % "0.2"
 
-//libraryDependencies += "it.unimi.dsi" % "fastutil" % "6.5.15" //Faster serialization
 
 //libraryDependencies += ("org.apache.spark" %% "spark-sql" % "1.0.1") //Sql queries on spark shit
 
 libraryDependencies ++= Seq(
   "org.apache.hadoop" % "hadoop-client" % "2.4.0" % "provided" ,
-  //("org.apache.spark" %% "spark-core" % "1.0.0").
-  ("org.apache.spark" %% "spark-core" % "1.0.0" % "provided").
+  ("org.apache.spark" %% "spark-core" % "1.0.0").
+  //("org.apache.spark" %% "spark-core" % "1.0.0" % "provided").
     exclude("log4j", "log4j").
     exclude("commons-beanutils", "commons-beanutils").
     exclude("commons-beanutils", "commons-beanutils-core").
@@ -113,7 +116,7 @@ sourceGenerators in Compile += Def.task {
     lines = "import org.apache.spark.Partitioner" :: lines
     lines = "import Implicits._" :: lines
     lines = "trait MenthalEvent { " :: lines
-    lines = "  def id:Long" :: lines
+    //lines = "  def id:Long" :: lines
     lines = "  def userId:Long" :: lines
     lines = "  def time:Long" :: lines
     lines = "  def toAvro:SpecificRecord" :: lines
@@ -156,3 +159,5 @@ sourceGenerators in Compile += Def.task {
     path
   }.toSeq
 }.taskValue
+
+
