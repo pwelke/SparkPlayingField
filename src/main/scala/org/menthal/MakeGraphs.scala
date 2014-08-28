@@ -23,8 +23,9 @@ object MakeGraphs {
     val sc = new SparkContext(args(0), "UserGraphGeneration", System.getenv("SPARK_HOME"))//, SparkContext.jarOfClass(this.getClass))
     val dumpFile = args(1)
     val outFile = args(2)
-    val appSessions = ParquetIO.read[(Long, AppSessionContainer)](dumpFile, sc, None)
-    val result = appSessions
+    val appSessions = ParquetIO.read[AppSession](dumpFile, sc, None)
+    val phoneSessions = appSessions
+    val result = phoneSessions
       .map(x => (x._1, sessionToGraph(x._2)))
       .reduceByKey(_ union _)
     ParquetIO.write[(Long, Graph)](sc, result, outFile)
@@ -33,6 +34,9 @@ object MakeGraphs {
 
   def sessionToGraph(container:AppSessionContainer): Graph = {
     var graph = new Graph()
+
+    val sortedAndGrouped = containers.sortByKey().map{case ((time,user), container) => (user,container)}
+    sortedAndGrouped.reduceByKey( _ + _ )
 
   }
 
